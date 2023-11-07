@@ -1,0 +1,15 @@
+node {
+  stage ('prepare') {
+git branch: 'main', changelog: false, poll: false, url: 'https://github.com/abhola/restro.git'
+     }
+  stage('build') {
+		def mvnHome = tool 'maven'
+		withEnv(["MVN_HOME=$mvnHome"]){
+			sh '"$MVN_HOME/bin/mvn" clean compile package'
+		}
+	}
+  stage('deploy') { 
+     deploy adapters: [tomcat9(credentialsId: '67bba22f-05d4-490f-80c1-73ade43a5d8f', path: '', url: 'http://65.0.185.4:8080/')], contextPath: null, onFailure: false, war: '**/*.war'
+
+   }
+   }
